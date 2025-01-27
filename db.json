@@ -1,0 +1,42 @@
+{
+    "expenses": [
+      {
+        "id": 1,
+        "category": "Food",
+        "amount": 50,
+        "date": "2025-01-01",
+        "note": "Lunch at restaurant"
+      },
+      {
+        "id": 2,
+        "category": "Transport",
+        "amount": 15,
+        "date": "2025-01-02",
+        "note": "Taxi fare"
+      },
+      {
+        "id": 3,
+        "category": "Entertainment",
+        "amount": 30,
+        "date": "2025-01-03",
+        "note": "Movie night"
+      }
+    ],
+    "income": [
+      {
+        "id": 1,
+        "source": "Freelance Project",
+        "amount": 500,
+        "date": "2025-01-01",
+        "note": "Website design"
+      },
+      {
+        "id": 2,
+        "source": "Salary",
+        "amount": 1500,
+        "date": "2025-01-05",
+        "note": "Monthly salary"
+      }
+    ]
+  }
+  
