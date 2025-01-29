@@ -1,9 +1,20 @@
 'use client'
-import React, { useState } from "react"
-import { Box, TextField, Button, Typography, Container, Avatar, InputAdornment, IconButton, Paper } from "@mui/material"
-import { Visibility, VisibilityOff, PhotoCamera } from "@mui/icons-material"
-import { styled } from "@mui/system"
-import { ThemeProvider, createTheme } from "@mui/material/styles"
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Paper,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { styled } from "@mui/system";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 // Tema yaratish
 const theme = createTheme({
@@ -12,7 +23,7 @@ const theme = createTheme({
       main: "#f50057", // Sekundariya rang
     },
   },
-})
+});
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),
@@ -22,26 +33,18 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   alignItems: "center",
   borderRadius: 16,
   boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .1)",
-}))
-
-const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: theme.spacing(12),
-  height: theme.spacing(12),
-  marginBottom: theme.spacing(2),
-  backgroundColor: theme.palette.secondary?.main || "#f50057", // Standart rang bilan
-  cursor: "pointer",
-}))
+}));
 
 const StyledForm = styled("form")(({ theme }) => ({
   width: "100%",
   marginTop: theme.spacing(3),
-}))
+}));
 
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(3, 0, 2),
   borderRadius: 20,
   padding: theme.spacing(1, 4),
-}))
+}));
 
 function SignUpForm() {
   const [formData, setFormData] = useState({
@@ -49,33 +52,41 @@ function SignUpForm() {
     email: "",
     password: "",
     phone: "",
-    profile_image: null,
     role: "user",
-  })
-  const [showPassword, setShowPassword] = useState(false)
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter(); // useRouter ni komponentning yuqori qismida chaqiramiz
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setFormData((prevState) => ({
-        ...prevState,
-        profile_image: file,
-      }))
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/users", formData);
+      console.log("Response:", response.data);
+
+      alert("Sign up successful!");
+      router.push("/login"); // Router ni to'g'ri ishlatish
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Sign up failed. Please try again.");
     }
-  }
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Here you would typically send the form data to your backend
-    console.log(formData)
+  // Client-side renderingni ta'minlash
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // Serverda render qilishdan oldin hech narsa ko'rsatma
   }
 
   return (
@@ -84,29 +95,6 @@ function SignUpForm() {
         <Typography component="h1" variant="h5" gutterBottom>
           Sign Up
         </Typography>
-        <input
-          accept="image/*"
-          style={{ display: "none" }}
-          id="profile-image-upload"
-          type="file"
-          onChange={handleImageChange}
-        />
-        <label htmlFor="profile-image-upload">
-        <StyledAvatar>
-  {formData.profile_image ? (
-    typeof window !== "undefined" ? (
-      <img
-        src={URL.createObjectURL(formData.profile_image)}
-        alt="Profile"
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      />
-    ) : null
-  ) : (
-    <PhotoCamera />
-  )}
-</StyledAvatar>
-
-        </label>
         <StyledForm onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
@@ -176,7 +164,7 @@ function SignUpForm() {
         </StyledForm>
       </StyledPaper>
     </Container>
-  )
+  );
 }
 
 // `ThemeProvider` bilan qoplash
@@ -185,5 +173,5 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <SignUpForm />
     </ThemeProvider>
-  )
+  );
 }
