@@ -68,7 +68,7 @@ function SignUpForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/users", formData);
+      const response = await axios.post("http://localhost:4000/users", formData);
       console.log("Response:", response.data);
 
       alert("Sign up successful!");

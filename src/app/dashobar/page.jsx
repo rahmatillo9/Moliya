@@ -14,14 +14,11 @@ import CalendarPage from "@/components/calendar";
 import ExpenseForm from "@/components/Create";
 import MonitoringPage from "@/components/monitoring";
 import AccountSidebarFooter from "@/components/accoun";
+import Home from "@/pages/index2";
 
 
 const NAVIGATION = [
-  {
-    segment: "dashboard",
-    title: "Create",
-    icon: <AddBoxIcon />,
-  },
+
   {
     segment: "calendar",
     title: "Calendar",
@@ -31,6 +28,12 @@ const NAVIGATION = [
     segment: "monitoring",
     title: "Monitoring",
     icon: <VisibilityIcon />,
+  },
+
+  {
+    segment: "dashboard",
+    title: "Create",
+    icon: <AddBoxIcon />,
   },
 ];
 
@@ -71,7 +74,7 @@ function DemoPageContent({ pathname }) {
       }}
     >
       {pathname === "/calendar" && <CalendarPage />}
-      {pathname === "/monitoring" && <MonitoringPage />}
+      {pathname === "/monitoring" && <Home />}
       {pathname === "/dashboard" && <ExpenseForm/>}
     </Box>
   );

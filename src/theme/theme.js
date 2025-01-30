@@ -1,27 +1,19 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles"
+import { red } from "@mui/material/colors"
 
-const demoTheme = createTheme({
+// Tema yaratish
+const theme = createTheme({
   palette: {
     primary: {
-      main: "#1976d2", // Asosiy (primary) rang
+      main: "#556cd6",
     },
     secondary: {
-      main: "#f50057", // Ikkinchi darajali (secondary) rang
+      main: "#19857b",
     },
-    background: {
-      default: "#f4f6f8", // Umumiy fon rangi
-      paper: "#ffffff", // Karta yoki panel fon rangi
-    },
-    text: {
-      primary: "#212121", // Asosiy matn rangi
-      secondary: "#757575", // Ikkinchi darajali matn rangi
+    error: {
+      main: red.A400,
     },
   },
-  typography: {
-    fontFamily: "'Roboto', 'Arial', sans-serif", // Shriftni sozlash
-    h1: {
-      fontSize: "2rem", // H1 sarlavha o'lchami
-      fontWeight: 600,
-    },
-  },
-});
+})
+
+export default theme

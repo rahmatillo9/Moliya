@@ -1,21 +1,24 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 import { Box, Avatar, Typography, MenuList, MenuItem, ListItemIcon, ListItemText, Divider, Menu } from "@mui/material"
 
 function AccountSidebarFooter() {
   const [user, setUser] = useState(null)
+  const [error, setError] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null)
   const router = useRouter()
 
   useEffect(() => {
-    const fetchUserData = () => {
+    const fetchUserData = async () => {
       const token = localStorage.getItem("authToken")
 
       if (!token) {
         console.error("No token found")
+        setError("No authentication token found")
         return
       }
 
@@ -23,22 +26,44 @@ function AccountSidebarFooter() {
         const decodedToken = jwtDecode(token)
         console.log("Decoded token:", decodedToken)
 
-        // Token ma'lumotlarini tekshirish va standart qiymatlar bilan to'ldirish
-        const userData = {
-          id: decodedToken.id || "default_id",
-          fullname: decodedToken.fullname || "Unknown User",
-          email: decodedToken.email || "No email provided",
-          profile_image: decodedToken.profile_image || "",
+        const userId = decodedToken.id || decodedToken.sub
+
+        if (!userId) {
+          console.error("No user ID found in token")
+          setError("Invalid token: No user ID found")
+          return
         }
 
-        setUser(userData)
+        console.log("Fetching user data for ID:", userId)
+
+        const response = await axios.get(`http://localhost:4000/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        console.log("Decoded token:", decodedToken)
+        console.log("Fetching user data for ID:", userId)
+        console.log("response:", response)
+        
+        setUser(response.data)
       } catch (error) {
-        console.error("Error decoding token:", error)
+        console.error("Error fetching user data:", error)
+        if (axios.isAxiosError(error)) {
+          console.error("Response status:", error.response?.status)
+          console.error("Response data:", error.response?.data)
+          if (error.response?.status === 403) {
+            setError("Access forbidden. You may not have the necessary permissions.")
+          } else {
+            setError(`Error: ${error.message}`)
+          }
+        } else {
+          setError("An unexpected error occurred")
+        }
       }
     }
 
     fetchUserData()
-  }, [])
+  }, []) // Removed unnecessary dependency: router
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
@@ -53,7 +78,14 @@ function AccountSidebarFooter() {
     handleCloseUserMenu()
   }
 
+  if (error) {
+    return <div>Error: {error}</div>
+  }
+
   if (!user) return <div>Loading...</div>
+
+  // Concatenate base URL to the profile image
+  const profileImageUrl = user.profile_image ? `http://localhost:4000${user.profile_image}` : ""
 
   return (
     <Box sx={{ p: 2 }}>
@@ -63,7 +95,7 @@ function AccountSidebarFooter() {
       <MenuList>
         <MenuItem key={user.id} sx={{ gap: 1 }} onClick={handleOpenUserMenu}>
           <ListItemIcon>
-            <Avatar sx={{ bgcolor: "primary.main" }} src={user.profile_image} alt={user.fullname}>
+            <Avatar sx={{ bgcolor: "primary.main" }} src={profileImageUrl} alt={user.fullname}>
               {user.fullname.charAt(0)}
             </Avatar>
           </ListItemIcon>
@@ -82,12 +114,10 @@ function AccountSidebarFooter() {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-        <MenuItem onClick={() => alert("Editing Profile...")}>Edit Profile</MenuItem>
+        <MenuItem onClick={() => router.push('/updateP')}>Edit Profile</MenuItem>
       </Menu>
     </Box>
   )
 }
 
 export default AccountSidebarFooter
-
