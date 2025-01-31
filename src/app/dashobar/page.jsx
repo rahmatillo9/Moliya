@@ -3,27 +3,26 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import { createTheme } from "@mui/material/styles";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useDemoRouter } from "@toolpad/core/internal";
-import CalendarPage from "@/components/calendar";
 import ExpenseForm from "@/components/Create";
-import MonitoringPage from "@/components/monitoring";
 import AccountSidebarFooter from "@/components/accoun";
 import Home from "@/pages/index2";
-
-
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import Analistika from "@/components/AnalyticsChart";
 const NAVIGATION = [
 
   {
-    segment: "calendar",
-    title: "Calendar",
-    icon: <CalendarMonthIcon />,
+    segment: "diagrama",
+    title: "Analistika",
+    icon: <AutoGraphIcon />,
   },
+
+
+
   {
     segment: "monitoring",
     title: "Monitoring",
@@ -73,7 +72,7 @@ function DemoPageContent({ pathname }) {
         textAlign: "center",
       }}
     >
-      {pathname === "/calendar" && <CalendarPage />}
+      {pathname === "/diagrama" && <Analistika />}
       {pathname === "/monitoring" && <Home />}
       {pathname === "/dashboard" && <ExpenseForm/>}
     </Box>

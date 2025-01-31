@@ -22,6 +22,7 @@ import {
   InputLabel,
 } from "@mui/material"
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material"
+import TransactionReport from "./Transaction"
 
 const TransactionsTable = ({ userId }) => {
   const [transactions, setTransactions] = useState([])
@@ -83,14 +84,21 @@ const TransactionsTable = ({ userId }) => {
     }
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, item) => {
     try {
-      await axios.delete(`http://localhost:4000/transactions/${id}`)
-      fetchTransactions()
+      // Tasdiqlash oynasini ko'rsatish
+      const isConfirmed = window.confirm(`Rostan ham transactionsni o'chirmoqchimisiz?`);
+      
+      // Agar tasdiqlangan bo'lsa, o'chirishni amalga oshirish
+      if (isConfirmed) {
+        await axios.delete(`http://localhost:4000/transactions/${id}`);
+        fetchTransactions(); // O'chirishdan so'ng yangi ro'yxatni yuklash
+      }
     } catch (error) {
-      console.error("O‘chirishda xatolik:", error)
+      console.error("O‘chirishda xatolik:", error);
     }
-  }
+  };
+  
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value) // Type ni yangilash
@@ -98,6 +106,8 @@ const TransactionsTable = ({ userId }) => {
 
   return (
     <>
+
+<TransactionReport/>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="tranzaksiyalar jadvali">
           <TableHead>
